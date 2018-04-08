@@ -81,4 +81,33 @@ type Transaccion = Billetera -> Evento
 
 -- Se aplica arriba de las funciones --
 
--- FALTA TERMINAR --
+
+
+-- NUEVOS EVENTOS --
+
+tocoYMeVoy :: Evento
+tocoYMeVoy = (cierreDeCuenta . upgrade . (deposito 15))
+
+--Probamos con " >tocoYMeVoy 10" y funciona --
+--Probamos con " >tocoYMeVoy (cantidad pepe)" y funciona --
+
+
+ahorranteErrante = ((deposito 10) . upgrade . (deposito 8) . (extraccion 1) . (deposito 2) . (deposito 1))
+ahorranteErrante :: Evento
+
+--Probamos con ">ahorranteErrante 10" y funciona --
+--Probamos con ">ahorranteErrante (cantidad lucho)" y funciona --
+
+
+luchoTocaYSeVa :: Billetera -> Float
+luchoTocaYSeVa unUsuario |nombre unUsuario == "Luciano" = tocoYMeVoy (cantidad unUsuario)
+                         |otherwise = quedaIgual (cantidad unUsuario)
+
+--Probamos con " >luchoTocaYSeVa lucho" y funciona--
+
+
+luchoEsAhorranteErrante :: Billetera -> Float
+luchoEsAhorranteErrante unUsuario |nombre unUsuario == "Luciano" = ahorranteErrante (cantidad unUsuario)
+                                  |otherwise = quedaIgual (cantidad unUsuario)
+
+--Probamos con " >luchoEsAhorranteErrante lucho" anda --
