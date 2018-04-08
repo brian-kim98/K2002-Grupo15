@@ -111,3 +111,12 @@ luchoEsAhorranteErrante unUsuario |nombre unUsuario == "Luciano" = ahorranteErra
                                   |otherwise = quedaIgual (cantidad unUsuario)
 
 --Probamos con " >luchoEsAhorranteErrante lucho" anda --
+
+pepeLeDa7UnidadesALucho :: Transaccion
+
+pepeLeDa7UnidadesALucho unUsuario | nombre unUsuario == "Jose" = extraccion 7
+                                  | nombre unUsuario == "Luciano" = deposito 7
+                                  | otherwise = quedaIgual
+
+--Probamos " > pepeLeDa7UnidadesALucho pepe 10"  y funciona --
+--Probamos " > pepeLeDa7UnidadesALucho lucho 10"  y funciona --
