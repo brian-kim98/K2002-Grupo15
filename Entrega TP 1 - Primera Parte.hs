@@ -123,13 +123,22 @@ pepeLeDa7UnidadesALucho unUsuario | nombre unUsuario == "Jose" = extraccion 7
 
 -- Vamos con los Tests ahora :D --
 ejecutarTests = hspec $ do
- it "Depositar 10 en una billetera de 10 monedas = 20" (deposito 10 10 `shouldBe` 20)
- it "Extraer 3 de una billetera de 10 monedas = 7" (extraccion 3 10 `shouldBe` 7)
- it "Extraer 15 de una billetera de 10 monedas = 0" (extraccion 15 10 `shouldBe` 0)
- it "Upgrade a una billetera de 10 monedas = 12" (upgrade 10 `shouldBe` 12)
- it "Cerrar la cuenta a una billetera de 10 monedas = 0" (cierreDeCuenta 10 `shouldBe` 0)
- it "Que quede igual la billetera de 10 monedas = 10" (quedaIgual 10 `shouldBe` 10)
- it "Depositar 1000 y realizar un upgrade a una billetera de 10 monedas = 1020" ((upgrade . (deposito 1000)) 10 `shouldBe` 1020)
- it "La billetera de Pepe debería ser de 10 monedas" (cantidad pepe `shouldBe` 10)
- it "El cierre de cuenta de la billetera de Pepe quedaría en 0 monedas" (cierreDeCuenta (cantidad pepe) `shouldBe` 0)
- it "La billetera de Pepe, luego del deposito de 15 monedas, extraer 2 y tener un upgrade, tiene 27,6 monedas" ((upgrade . (extraccion 2) . (deposito 15)) (cantidad pepe) `shouldBe` 27.6)
+ describe "Operaciones de Eventos " $ do
+   it "Depositar 10 en una billetera de 10 monedas = 20" (deposito 10 10 `shouldBe` 20)
+   it "Extraer 3 de una billetera de 10 monedas = 7" (extraccion 3 10 `shouldBe` 7)
+   it "Extraer 15 de una billetera de 10 monedas = 0" (extraccion 15 10 `shouldBe` 0)
+   it "Upgrade a una billetera de 10 monedas = 12" (upgrade 10 `shouldBe` 12)
+   it "Cerrar la cuenta a una billetera de 10 monedas = 0" (cierreDeCuenta 10 `shouldBe` 0)
+   it "Que quede igual la billetera de 10 monedas = 10" (quedaIgual 10 `shouldBe` 10)
+   it "Depositar 1000 y realizar un upgrade a una billetera de 10 monedas = 1020" ((upgrade . (deposito 1000)) 10 `shouldBe` 1020)
+ describe "Operaciones de Usuarios " $ do
+   it "La billetera de Pepe debería ser de 10 monedas" (cantidad pepe `shouldBe` 10)
+   it "El cierre de cuenta de la billetera de Pepe quedaría en 0 monedas" (cierreDeCuenta (cantidad pepe) `shouldBe` 0)
+   it "La billetera de Pepe, luego del deposito de 15 monedas, extraer 2 y tener un upgrade, tiene 27,6 monedas" ((upgrade . (extraccion 2) . (deposito 15)) (cantidad pepe) `shouldBe` 27.6)
+ describe "Operaciones de Transacciones " $ do
+   it "Aplicamos la transaccion lucho cierra su cuenta, a pepe y la funcion que nos da lo aplicamos a una billetera de 20 monedas, esto da 20 ya que queda igual " ((luchoCierraLaCuenta pepe) 20 `shouldBe` 20)
+   it "La transacción 'pepe deposita 5 monedas' se aplica a Pepe. El resultad lo aplicamos a una billetera de 10 monedas, deberia quedar con 15" ((pepeDeposita5Monedas pepe) 10 `shouldBe` 15)
+   it "La transaccion 'pepe deposita 5 monedas' se aplica al Pepe2. El evento resultante se aplica a una billetera de 50 monedas, y debería quedar con 55." ((pepeDeposita5Monedas pepe2) 50 `shouldBe` 55)
+ describe "Operaciones de Nuevos Eventos " $ do
+   it "Un usuario con 10 monedas toca y se va, terminaria con 0 monedas" ((tocoYMeVoy 10) `shouldBe` 0)
+   it "Un usuario con 10 monedas es ahorrante errante, deberia terminar con 34 monedas " ((ahorranteErrante 10) `shouldBe` 34)
