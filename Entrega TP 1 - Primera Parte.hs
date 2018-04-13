@@ -142,3 +142,6 @@ ejecutarTests = hspec $ do
  describe "Operaciones de Nuevos Eventos " $ do
    it "Un usuario con 10 monedas toca y se va, terminaria con 0 monedas" ((tocoYMeVoy 10) `shouldBe` 0)
    it "Un usuario con 10 monedas es ahorrante errante, deberia terminar con 34 monedas " ((ahorranteErrante 10) `shouldBe` 34)
+ describe "Transacciones mas complejas " $ do
+   it "Aplicamos la transaccion 'pepe le da 7 unidades a lucho' con Pepe, que cuenta con una billetera de 10 monedas, y termina con 3 monedas " ((pepeLeDa7UnidadesALucho pepe 10)`shouldBe` 3)
+   it "Aplicamos la transaccion 'pepe le da 7 unidades a lucho' con Lucho, que cuenta con una billetera de 10 monedas, termina con 17 monedas " ((pepeLeDa7UnidadesALucho lucho 10) `shouldBe` 17)
