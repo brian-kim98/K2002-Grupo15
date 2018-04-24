@@ -6,7 +6,7 @@ import Test.Hspec
 
 type Dinero = Float
 
-type Billetera = Float
+type Billetera = Dinero
 
 type Evento = Billetera -> Billetera
 
@@ -28,7 +28,7 @@ deposito cantidadADepositar carteraOnline = (+ carteraOnline) (max 0.0 cantidadA
 
 extraccion :: Dinero -> Evento
 extraccion cantidadAExtraer carteraOnline | (max 0 cantidadAExtraer) <= carteraOnline = carteraOnline - (max 0 cantidadAExtraer)
-
+                                          | otherwise = 0
 
 upgrade :: Evento
 bonus = (* 0.2)
@@ -79,7 +79,6 @@ generadorTransacciones :: Transaccion
 generadorTransacciones unaPersona unEvento otraPersona | nombre unaPersona == nombre otraPersona = unEvento
                                                        | otherwise = quedaIgual
 
--- Creamos el pepe 2 --
 pepe2 = Usuario {
 nombre = "Jose",
 billetera = 20
@@ -96,8 +95,7 @@ testTransacciones = hspec $ do
 
 
 generadorTransferencias :: Transferencias
-generadorTransferencias usuarioDeudor usuarioAcreedor usuarioAplicado unaCantidad  | unaCantidad > (billetera usuarioDeudor) = error "El usuario deudor no tiene suficientes monedas para pagar"
-                                                                                   | nombre usuarioDeudor == nombre usuarioAplicado = (extraccion unaCantidad)
+generadorTransferencias usuarioDeudor usuarioAcreedor usuarioAplicado unaCantidad  | nombre usuarioDeudor == nombre usuarioAplicado = (extraccion unaCantidad)
                                                                                    | nombre usuarioAcreedor == nombre usuarioAplicado = (deposito unaCantidad)
                                                                                    | otherwise = quedaIgual
 
