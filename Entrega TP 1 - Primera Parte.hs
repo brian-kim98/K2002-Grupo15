@@ -76,8 +76,11 @@ testUsuarios = hspec $ do
 
 
 generadorTransacciones :: Transaccion
-generadorTransacciones unaPersona unEvento otraPersona | nombre unaPersona == nombre otraPersona = unEvento
-                                                       | otherwise = quedaIgual
+generadorTransacciones unaPersona unEvento personaAplicada | mismoUsuario unaPersona personaAplicada = unEvento
+                                                              | otherwise = quedaIgual
+
+mismoUsuario :: Usuario -> Usuario -> Bool
+mismoUsuario persona1 persona2 = nombre persona1 == nombre persona2
 
 pepe2 = Usuario {
 nombre = "Jose",
@@ -95,8 +98,8 @@ testTransacciones = hspec $ do
 
 
 generadorTransferencias :: Transferencias
-generadorTransferencias usuarioDeudor usuarioAcreedor usuarioAplicado unaCantidad  | nombre usuarioDeudor == nombre usuarioAplicado = (extraccion unaCantidad)
-                                                                                   | nombre usuarioAcreedor == nombre usuarioAplicado = (deposito unaCantidad)
+generadorTransferencias usuarioDeudor usuarioAcreedor usuarioAplicado unaCantidad  | mismoUsuario usuarioDeudor usuarioAplicado = (extraccion unaCantidad)
+                                                                                   | mismoUsuario usuarioAcreedor usuarioAplicado = (deposito unaCantidad)
                                                                                    | otherwise = quedaIgual
 
 
