@@ -104,3 +104,23 @@ testTransferencias = hspec $ do
   describe "Transacciones mas complejas " $ do
   it "Aplicamos la transaccion 'pepe le da 7 unidades a lucho' con Pepe, esto lo aplicamos a una billetera de 10 monedas, y termina con 3 monedas " $ (generadorTransferencias pepe lucho pepe 7 10)`shouldBe` 3
   it "Aplicamos la transaccion 'pepe le da 7 unidades a lucho' con Lucho, esto lo aplicamos a una billetera de 10 monedas, termina con 17 monedas " $ (generadorTransferencias pepe lucho lucho 7 10) `shouldBe` 17
+
+---------------------------------------------------------------------------------------------------------------------------------
+  -- SEGUNDA PARTE --
+
+
+ testUsuarioTransaccion = hspec $ do
+   describe "Usuario luego de transacción" $ do
+     it "Se realiza la transacción 'Lucho cierra la cuenta' en Pepe directamente (Pepe cuenta con una billetera de 10 monedas) = 10 monedas" $ (generadorTransacciones lucho cierreDeCuenta pepe (billetera pepe)) `shouldBe` 10
+     it "Aplicamos la transaccion 'pepe le da 7 unidades a lucho' a Lucho directamente (Lucho cuenta con una billetera de 2 monedas) = 9 monedas" $ (generadorTransferencias pepe lucho 7 lucho (billetera lucho)) `shouldBe` 9
+     it "Aplicamos la transaccion 'pepe le da 7 unidades a lucho' y luego 'pepe deposita 5 monedas' a Pepe (Pepe cuenta con una billetera de 10 monedas) = 8" $ ((generadorTransacciones pepe (deposito 5) pepe) . (generadorTransferencias pepe lucho 7 pepe)) (billetera pepe) `shouldBe` 8
+
+
+ billeteraLuegoDeTransaccion :: Usuario -> Evento -> Usuario -> Usuario
+ billeteraLuegoDeTransaccion unaPersona unEvento personaAplicada = personaAplicada {
+   billetera = (generadorTransacciones unaPersona unEvento personaAplicada) (billetera personaAplicada)
+ }
+ billeteraLuegoDeTransferencia :: Usuario -> Usuario -> Dinero -> Usuario -> Usuario
+ billeteraLuegoDeTransferencia usuarioDeudor usuarioAcreedor unaCantidad usuarioAplicado = usuarioAplicado {
+   billetera = generadorTransferencias usuarioDeudor usuarioAcreedor unaCantidad usuarioAplicado  (billetera usuarioAplicado)
+ }
