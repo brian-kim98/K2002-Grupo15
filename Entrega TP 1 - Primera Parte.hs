@@ -179,18 +179,32 @@ elMenosAdinerado unBloque (cabezaUsuario : []) = cabezaUsuario
 elMenosAdinerado unBloque (cabezaUsuario : (cabezaColaUsuarios:colaColaUsuarios)) | elMasRicoEsElPrimero cabezaColaUsuarios cabezaUsuario unBloque = elMenosAdinerado unBloque (cabezaUsuario : colaColaUsuarios)
                                                                                   | otherwise = elMenosAdinerado unBloque (cabezaColaUsuarios : colaColaUsuarios)
 
-
+ --BLOCKCHAIN--
 
 testBlockChain = hspec $ do
       describe "Testeo de BlockChains " $ do
+      it "El peor bloque con el cual podria empezar pepe de una cadena de 1 segundo bloque y 10 primer bloque, deberia ser cualquiera de los primer bloque, ya que empezaria con 18 monedas" $ billetera (elPeorBloque pepe (segundoBloque :(take 10 (repeat primerBloque))) pepe) `shouldBe` 18
       it "Aplicar un BlockChain compuesta del segundoBloque, seguido del primerBloque 10 veces a pepe, esto deberia dar una billetera de 115" $ foldr ($) pepe listaBlockChain `shouldBe` Usuario {nombre = "Jose", billetera = 115.0}
+      it "Aplicar la BlockChain de 1 segundo bloque seguido de 10 segundo bloques, a una lista que contenga a pepe y lucho, esto deberia devolvernos una lista de pepe con 115 monedas y un lucho con 0 monedas" $  map (blockChain listaBlockChain) [pepe,lucho] `shouldBe` [Usuario {nombre = "Jose", billetera = 115.0},Usuario {nombre = "Luciano", billetera = 0.0}]
 
 bloque2 = [pepeDeposita5monedas, pepeDeposita5monedas, pepeDeposita5monedas, pepeDeposita5monedas ,pepeDeposita5monedas]
 
 segundoBloque :: Bloque
-
 segundoBloque unUsuario = unUsuario {
     billetera = (foldr ($) (billetera unUsuario) . map ($ unUsuario)) bloque2
 }
 
-listaBlockChain = [segundoBloque, primerBloque, primerBloque , primerBloque , primerBloque , primerBloque , primerBloque , primerBloque , primerBloque , primerBloque, primerBloque]
+elPeorBloque :: Usuario -> [Bloque] -> Bloque
+elPeorBloque unUsuario [unBloque] =  unBloque
+elPeorBloque unUsuario (cabezaBloque : medioBloque :colaBloque) | elPeorBloqueEsElSegundo cabezaBloque medioBloque unUsuario = elPeorBloque unUsuario (medioBloque:colaBloque)
+                                                                | otherwise = elPeorBloque unUsuario (cabezaBloque:colaBloque)
+-- auxiliar --
+elPeorBloqueEsElSegundo :: Bloque -> Bloque -> Usuario -> Bool
+elPeorBloqueEsElSegundo unBloque otroBloque unUsuario = billetera (unBloque unUsuario) >= billetera (otroBloque unUsuario)
+--------------
+
+listaBlockChain = (segundoBloque :(take 10 (repeat primerBloque)))
+
+type BlockChain = [Bloque]
+blockChain :: BlockChain -> Usuario -> Usuario
+blockChain unaListaDeBloques unUsuario = foldr ($) unUsuario unaListaDeBloques
