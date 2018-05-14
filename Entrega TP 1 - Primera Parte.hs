@@ -14,7 +14,7 @@ type Nombre = String
 
 type Transaccion = Usuario -> Evento -> Usuario -> Evento
 
-type Transferencias = Usuario -> Usuario -> Usuario -> Dinero -> Evento
+type Transferencias = Usuario -> Usuario -> Dinero -> Usuario -> Evento
 
 data Usuario = Usuario {
 nombre :: Nombre,
@@ -98,49 +98,65 @@ testTransacciones = hspec $ do
 
 
 generadorTransferencias :: Transferencias
-generadorTransferencias usuarioDeudor usuarioAcreedor usuarioAplicado unaCantidad  | mismoUsuario usuarioDeudor usuarioAplicado = (extraccion unaCantidad)
+generadorTransferencias usuarioDeudor usuarioAcreedor unaCantidad usuarioAplicado  | mismoUsuario usuarioDeudor usuarioAplicado = (extraccion unaCantidad)
                                                                                    | mismoUsuario usuarioAcreedor usuarioAplicado = (deposito unaCantidad)
                                                                                    | otherwise = quedaIgual
 
 
 testTransferencias = hspec $ do
   describe "Transacciones mas complejas " $ do
-  it "Aplicamos la transaccion 'pepe le da 7 unidades a lucho' con Pepe, esto lo aplicamos a una billetera de 10 monedas, y termina con 3 monedas " $ (generadorTransferencias pepe lucho pepe 7 10)`shouldBe` 3
-  it "Aplicamos la transaccion 'pepe le da 7 unidades a lucho' con Lucho, esto lo aplicamos a una billetera de 10 monedas, termina con 17 monedas " $ (generadorTransferencias pepe lucho lucho 7 10) `shouldBe` 17
+  it "Aplicamos la transaccion 'pepe le da 7 unidades a lucho' con Pepe, esto lo aplicamos a una billetera de 10 monedas, y termina con 3 monedas " $ (generadorTransferencias pepe lucho 7 pepe 10)`shouldBe` 3
+  it "Aplicamos la transaccion 'pepe le da 7 unidades a lucho' con Lucho, esto lo aplicamos a una billetera de 10 monedas, termina con 17 monedas " $ (generadorTransferencias pepe lucho 7 lucho 10) `shouldBe` 17
 
 ---------------------------------------------------------------------------------------------------------------------------------
   -- SEGUNDA PARTE --
 
 
- testUsuarioTransaccion = hspec $ do
+testUsuarioTransaccion = hspec $ do
    describe "Usuario luego de transacción" $ do
      it "Se realiza la transacción 'Lucho cierra la cuenta' en Pepe directamente (Pepe cuenta con una billetera de 10 monedas) = 10 monedas" $ (generadorTransacciones lucho cierreDeCuenta pepe (billetera pepe)) `shouldBe` 10
      it "Aplicamos la transaccion 'pepe le da 7 unidades a lucho' a Lucho directamente (Lucho cuenta con una billetera de 2 monedas) = 9 monedas" $ (generadorTransferencias pepe lucho 7 lucho (billetera lucho)) `shouldBe` 9
      it "Aplicamos la transaccion 'pepe le da 7 unidades a lucho' y luego 'pepe deposita 5 monedas' a Pepe (Pepe cuenta con una billetera de 10 monedas) = 8" $ ((generadorTransacciones pepe (deposito 5) pepe) . (generadorTransferencias pepe lucho 7 pepe)) (billetera pepe) `shouldBe` 8
 
 
- billeteraLuegoDeTransaccion :: Usuario -> Evento -> Usuario -> Usuario
- billeteraLuegoDeTransaccion unaPersona unEvento personaAplicada = personaAplicada {
-   billetera = (generadorTransacciones unaPersona unEvento personaAplicada) (billetera personaAplicada)
+billeteraLuegoDeTransaccion :: Usuario -> Evento -> Usuario -> Usuario
+billeteraLuegoDeTransaccion unaPersona unEvento personaAplicada = personaAplicada {
+  billetera = (generadorTransacciones unaPersona unEvento personaAplicada) (billetera personaAplicada)
  }
- billeteraLuegoDeTransferencia :: Usuario -> Usuario -> Dinero -> Usuario -> Usuario
- billeteraLuegoDeTransferencia usuarioDeudor usuarioAcreedor unaCantidad usuarioAplicado = usuarioAplicado {
-   billetera = generadorTransferencias usuarioDeudor usuarioAcreedor unaCantidad usuarioAplicado  (billetera usuarioAplicado)
+billeteraLuegoDeTransferencia :: Usuario -> Usuario -> Dinero -> Usuario -> Usuario
+billeteraLuegoDeTransferencia usuarioDeudor usuarioAcreedor unaCantidad usuarioAplicado = usuarioAplicado {
+  billetera = generadorTransferencias usuarioDeudor usuarioAcreedor unaCantidad usuarioAplicado  (billetera usuarioAplicado)
  }
 
- testBloques = hspec $ do
+ --BLOQUE--
+ -- Creamos las transacciones para que sea menos tedioso --
+luchoCierraLaCuenta :: Usuario -> Evento
+luchoCierraLaCuenta = generadorTransacciones lucho cierreDeCuenta
+
+pepeDeposita5monedas :: Usuario -> Evento
+pepeDeposita5monedas = generadorTransacciones pepe (deposito 5)
+
+luchoTocaYSeVa :: Usuario -> Evento
+luchoTocaYSeVa = generadorTransacciones lucho tocoYMeVoy
+
+luchoAhorranteErrante :: Usuario -> Evento
+luchoAhorranteErrante = generadorTransacciones lucho ahorranteErrante
+
+pepeDa7ALucho :: Usuario -> Evento
+pepeDa7ALucho = generadorTransferencias pepe lucho 7
+
+testBloques = hspec $ do
    describe "Testeo de Bloques" $ do
      it "A partir del primer bloque, pepe deberia quedar con una billetera de 18 monedas " $ (foldr ($) (billetera pepe) . map ($ pepe)) bloque1 `shouldBe` 18
      it "Para el bloque 1, y los usuarios Pepe y Lucho, el único que quedaría con un saldo mayor a 10, es Pepe." $ filter ((>= 10) . billetera . primerBloque) [lucho, pepe] `shouldBe` [pepe]
 
+bloque1 = [luchoTocaYSeVa, pepeDa7ALucho, luchoAhorranteErrante, luchoTocaYSeVa, pepeDeposita5monedas, pepeDeposita5monedas, pepeDeposita5monedas, luchoCierraLaCuenta]
 
- bloque1 = [luchoTocaYSeVa, pepeDa7ALucho, luchoAhorranteErrante, luchoTocaYSeVa, pepeDeposita5monedas, pepeDeposita5monedas, pepeDeposita5monedas, luchoCierraLaCuenta]
-
- type Bloque = Usuario -> Usuario
- primerBloque :: Bloque
- primerBloque unUsuario = unUsuario {
-   billetera = (foldr ($) (billetera unUsuario) . map ($ unUsuario)) bloque1
+type Bloque = Usuario -> Usuario
+primerBloque :: Bloque
+primerBloque unUsuario = unUsuario {
+  billetera = (foldr ($) (billetera unUsuario) . map ($ unUsuario)) bloque1
    }
- 
- saldoDeAlMenosNCreditos :: Dinero -> Bloque -> [Usuario] -> [Usuario]
- saldoDeAlMenosNCreditos n bloque unaListaDeUsuarios = filter ((> n) . billetera . bloque) unaListaDeUsuarios
+
+saldoDeAlMenosNCreditos :: Dinero -> Bloque -> [Usuario] -> [Usuario]
+saldoDeAlMenosNCreditos n bloque unaListaDeUsuarios = filter ((> n) . billetera . bloque) unaListaDeUsuarios
