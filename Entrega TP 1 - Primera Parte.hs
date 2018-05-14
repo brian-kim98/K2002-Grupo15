@@ -127,3 +127,20 @@ testTransferencias = hspec $ do
  billeteraLuegoDeTransferencia usuarioDeudor usuarioAcreedor unaCantidad usuarioAplicado = usuarioAplicado {
    billetera = generadorTransferencias usuarioDeudor usuarioAcreedor unaCantidad usuarioAplicado  (billetera usuarioAplicado)
  }
+
+ testBloques = hspec $ do
+   describe "Testeo de Bloques" $ do
+     it "A partir del primer bloque, pepe deberia quedar con una billetera de 18 monedas " $ (foldr ($) (billetera pepe) . map ($ pepe)) bloque1 `shouldBe` 18
+     it "Para el bloque 1, y los usuarios Pepe y Lucho, el único que quedaría con un saldo mayor a 10, es Pepe." $ filter ((>= 10) . billetera . primerBloque) [lucho, pepe] `shouldBe` [pepe]
+
+
+ bloque1 = [luchoTocaYSeVa, pepeDa7ALucho, luchoAhorranteErrante, luchoTocaYSeVa, pepeDeposita5monedas, pepeDeposita5monedas, pepeDeposita5monedas, luchoCierraLaCuenta]
+
+ type Bloque = Usuario -> Usuario
+ primerBloque :: Bloque
+ primerBloque unUsuario = unUsuario {
+   billetera = (foldr ($) (billetera unUsuario) . map ($ unUsuario)) bloque1
+   }
+ 
+ saldoDeAlMenosNCreditos :: Dinero -> Bloque -> [Usuario] -> [Usuario]
+ saldoDeAlMenosNCreditos n bloque unaListaDeUsuarios = filter ((> n) . billetera . bloque) unaListaDeUsuarios
