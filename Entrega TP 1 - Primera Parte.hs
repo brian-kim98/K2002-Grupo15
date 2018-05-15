@@ -226,3 +226,5 @@ blockChainInfinito bloque =  bloque : (blockChainInfinito (bloque.bloque))
 listaCuantosNecesarios :: Dinero -> Usuario -> [Bloque] -> [Bloque]
 listaCuantosNecesarios numero usuario (cabeza : cola) | billetera (cabeza usuario) >= numero = [cabeza]
                                                       | billetera (cabeza usuario) < numero = (cabeza : listaCuantosNecesarios numero (cabeza usuario) cola)
+
+-- El concepto clave para este ejercicio es el de Evaluación Diferida, ya que se busca que una vez encontrado el valor, que corte y no siga analizando la lista de forma infinita sin que corte --
