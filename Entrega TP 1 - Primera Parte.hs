@@ -220,8 +220,9 @@ testBlockChainInfinito = hspec $ do
   describe "Testeo de BlockChain Infinito" $ do
     it "Cuantos elementos de  una BlockChain infinita creada a partir del bloque 1 deben usarse para que Pepe llegue a tener 10000 créditos, deberian ser 11 para llegar a 16386" $ length (listaCuantosNecesarios 10000 pepe (blockChainInfinito primerBloque))  `shouldBe` 11
 
-
+blockChainInfinito :: Bloque -> [Bloque]
 blockChainInfinito bloque =  bloque : (blockChainInfinito (bloque.bloque))
 
+listaCuantosNecesarios :: Dinero -> Usuario -> [Bloque] -> [Bloque]
 listaCuantosNecesarios numero usuario (cabeza : cola) | billetera (cabeza usuario) >= numero = [cabeza]
                                                       | billetera (cabeza usuario) < numero = (cabeza : listaCuantosNecesarios numero (cabeza usuario) cola)
