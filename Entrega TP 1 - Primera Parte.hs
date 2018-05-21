@@ -16,6 +16,10 @@ type Transaccion = Usuario -> Evento -> Usuario -> Evento
 
 type Transferencias = Usuario -> Usuario -> Dinero -> Usuario -> Evento
 
+type Bloque = Usuario -> Usuario
+
+type BlockChain = [Bloque]
+
 data Usuario = Usuario {
 nombre :: Nombre,
 billetera :: Dinero
@@ -147,21 +151,20 @@ pepeDa7ALucho = generadorTransferencias pepe lucho 7
 
 testBloques = hspec $ do
    describe "Testeo de Bloques" $ do
-     it "A partir del primer bloque, pepe deberia quedar con una billetera de 18 monedas " $ (foldr ($) (billetera pepe) . map ($ pepe)) bloque1 `shouldBe` 18
-     it "Para el bloque 1, y los usuarios Pepe y Lucho, el único que quedaría con un saldo mayor a 10, es Pepe." $ filter ((>= 10) . billetera . primerBloque) [lucho, pepe] `shouldBe` [pepe]
+     it "A partir del primer bloque, pepe deberia quedar con una billetera de 18 monedas " $ billetera (primerBloque pepe) `shouldBe` 18
+     it "Para el bloque 1, y los usuarios Pepe y Lucho, el único que quedaría con un saldo mayor a 10, es Pepe." $ saldoDeAlMenosNCreditos 10 primerBloque [lucho, pepe] `shouldBe` [pepe]
      it "Determinar el mas adinerado con el primer bloque en una lista con lucho y pepe, deberia ser pepe. " $ elMasAdinerado primerBloque [lucho,pepe] `shouldBe` pepe
      it "Determinar el menos adinerado con el primer bloque en una lista con lucho y pepe, deberia ser lucho. " $ elMenosAdinerado primerBloque [lucho,pepe] `shouldBe` lucho
 
 bloque1 = [luchoTocaYSeVa, pepeDa7ALucho, luchoAhorranteErrante, luchoTocaYSeVa, pepeDeposita5monedas, pepeDeposita5monedas, pepeDeposita5monedas, luchoCierraLaCuenta]
 
-type Bloque = Usuario -> Usuario
 primerBloque :: Bloque
 primerBloque unUsuario = unUsuario {
   billetera = (foldr ($) (billetera unUsuario) . map ($ unUsuario)) bloque1
    }
 
 saldoDeAlMenosNCreditos :: Dinero -> Bloque -> [Usuario] -> [Usuario]
-saldoDeAlMenosNCreditos n bloque unaListaDeUsuarios = filter ((> n) . billetera . bloque) unaListaDeUsuarios
+saldoDeAlMenosNCreditos cantidadDeMonedas bloque = filter ((> cantidadDeMonedas) . billetera . bloque)
 
 
 -- auxiliar --
@@ -184,11 +187,13 @@ elMenosAdinerado unBloque (cabezaUsuario : (cabezaColaUsuarios:colaColaUsuarios)
 testBlockChain = hspec $ do
       describe "Testeo de BlockChains " $ do
       it "El peor bloque con el cual podria empezar pepe de una cadena de 1 segundo bloque y 10 primer bloque, deberia ser cualquiera de los primer bloque, ya que empezaria con 18 monedas" $ billetera (elPeorBloque pepe (segundoBloque :(take 10 (repeat primerBloque))) pepe) `shouldBe` 18
-      it "Aplicar un BlockChain compuesta del segundoBloque, seguido del primerBloque 10 veces a pepe, esto deberia dar una billetera de 115" $ foldr ($) pepe listaBlockChain `shouldBe` Usuario {nombre = "Jose", billetera = 115.0}
-      it "Probar tomando solo los primeros 3 bloques de una cadena de 1 segundo bloque y 10 primer bloque, aplicados a pepe, esto deberia dar un pepe con 51 monedas" $ foldr ($) pepe (take 3 listaBlockChain) `shouldBe`  Usuario {nombre = "Jose", billetera = 51.0}
+      it "Aplicar un BlockChain compuesta del segundoBloque, seguido del primerBloque 10 veces a pepe, esto deberia dar una billetera de 115" $ blockChain listaBlockChain pepe `shouldBe` Usuario {nombre = "Jose", billetera = 115.0}
+      it "Probar tomando solo los primeros 3 bloques de una cadena de 1 segundo bloque y 10 primer bloque, aplicados a pepe, esto deberia dar un pepe con 51 monedas" $ saldoLuegoDeNBloques 3 listaBlockChain pepe `shouldBe`  Usuario {nombre = "Jose", billetera = 51.0}
       it "Aplicar la BlockChain de 1 segundo bloque seguido de 10 segundo bloques, a una lista que contenga a pepe y lucho, esto deberia devolvernos una lista de pepe con 115 monedas y un lucho con 0 monedas" $  sum (map (billetera . (blockChain listaBlockChain)) [pepe,lucho]) `shouldBe` 115
 
 bloque2 = [pepeDeposita5monedas, pepeDeposita5monedas, pepeDeposita5monedas, pepeDeposita5monedas ,pepeDeposita5monedas]
+
+listaBlockChain = (segundoBloque :(take 10 (repeat primerBloque)))
 
 segundoBloque :: Bloque
 segundoBloque unUsuario = unUsuario {
@@ -204,12 +209,9 @@ elPeorBloqueEsElSegundo :: Bloque -> Bloque -> Usuario -> Bool
 elPeorBloqueEsElSegundo unBloque otroBloque unUsuario = billetera (unBloque unUsuario) >= billetera (otroBloque unUsuario)
 --------------
 
-saldoLuegoDeNBloques :: Int -> Usuario -> [Bloque] -> Usuario
-saldoLuegoDeNBloques cantidadDeBloques unUsuario listaDeBloques = blockChain (take cantidadDeBloques listaDeBloques) unUsuario
+saldoLuegoDeNBloques :: Int -> [Bloque] -> Usuario -> Usuario
+saldoLuegoDeNBloques cantidadDeBloques listaDeBloques = blockChain (take cantidadDeBloques listaDeBloques)
 
-listaBlockChain = (segundoBloque :(take 10 (repeat primerBloque)))
-
-type BlockChain = [Bloque]
 blockChain :: BlockChain -> Usuario -> Usuario
 blockChain unaListaDeBloques unUsuario = foldr ($) unUsuario unaListaDeBloques
 
