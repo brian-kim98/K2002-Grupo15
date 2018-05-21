@@ -171,10 +171,6 @@ elPeorBloque = (\unUsuario unaListaDeBloques unBloque -> all ( >= (billetera (un
 saldoDeAlMenosNCreditos :: Dinero -> Bloque -> [Usuario] -> [Usuario]
 saldoDeAlMenosNCreditos cantidadDeMonedas bloque = filter ((> cantidadDeMonedas) . billetera . bloque)
 
-
--- auxiliar --
-elMasRicoEsElPrimero :: Usuario -> Usuario -> Bloque -> Bool
-elMasRicoEsElPrimero usuario1 usuario2 unBloque = billetera (unBloque usuario1) >= billetera (unBloque usuario2)
 -------------
 
 elMasAdinerado:: Bloque -> [Usuario] -> Usuario -> Bool
