@@ -153,8 +153,8 @@ testBloques = hspec $ do
    describe "Testeo de Bloques" $ do
      it "A partir del primer bloque, pepe deberia quedar con una billetera de 18 monedas " $ billetera (primerBloque pepe) `shouldBe` 18
      it "Para el bloque 1, y los usuarios Pepe y Lucho, el único que quedaría con un saldo mayor a 10, es Pepe." $ saldoDeAlMenosNCreditos 10 primerBloque [lucho, pepe] `shouldBe` [pepe]
-     it "Determinar el mas adinerado con el primer bloque en una lista con lucho y pepe, deberia ser pepe. " $ elMasAdinerado primerBloque [lucho,pepe] `shouldBe` pepe
-     it "Determinar el menos adinerado con el primer bloque en una lista con lucho y pepe, deberia ser lucho. " $ elMenosAdinerado primerBloque [lucho,pepe] `shouldBe` lucho
+     it "Determinar el mas adinerado con el primer bloque en una lista con lucho y pepe, deberia ser pepe. " $ encontrarSegun (elMasAdinerado primerBloque [lucho, pepe]) [lucho, pepe] `shouldBe` pepe
+     it "Determinar el menos adinerado con el primer bloque en una lista con lucho y pepe, deberia ser lucho. " $  encontrarSegun (elMenosAdinerado primerBloque [lucho,pepe]) [lucho, pepe] `shouldBe` lucho
 
 bloque1 = [luchoTocaYSeVa, pepeDa7ALucho, luchoAhorranteErrante, luchoTocaYSeVa, pepeDeposita5monedas, pepeDeposita5monedas, pepeDeposita5monedas, luchoCierraLaCuenta]
 
@@ -177,15 +177,14 @@ elMasRicoEsElPrimero :: Usuario -> Usuario -> Bloque -> Bool
 elMasRicoEsElPrimero usuario1 usuario2 unBloque = billetera (unBloque usuario1) >= billetera (unBloque usuario2)
 -------------
 
-elMasAdinerado :: Bloque -> [Usuario] -> Usuario
-elMasAdinerado unBloque (cabezaUsuario : []) = cabezaUsuario
-elMasAdinerado unBloque (cabezaUsuario : (cabezaColaUsuarios:colaColaUsuarios)) | elMasRicoEsElPrimero cabezaUsuario cabezaColaUsuarios unBloque = elMasAdinerado unBloque (cabezaUsuario : colaColaUsuarios)
-                                                                                | otherwise = elMasAdinerado unBloque (cabezaColaUsuarios : colaColaUsuarios)
+elMasAdinerado:: Bloque -> [Usuario] -> Usuario -> Bool
 
-elMenosAdinerado :: Bloque -> [Usuario] -> Usuario
-elMenosAdinerado unBloque (cabezaUsuario : []) = cabezaUsuario
-elMenosAdinerado unBloque (cabezaUsuario : (cabezaColaUsuarios:colaColaUsuarios)) | elMasRicoEsElPrimero cabezaColaUsuarios cabezaUsuario unBloque = elMenosAdinerado unBloque (cabezaUsuario : colaColaUsuarios)
-                                                                                  | otherwise = elMenosAdinerado unBloque (cabezaColaUsuarios : colaColaUsuarios)
+elMasAdinerado = (\unBloque unaListaDeUsuarios unUsuario -> all ( <= (billetera (unBloque unUsuario))) $ (map (billetera . (($) unBloque)) unaListaDeUsuarios))
+
+
+elMenosAdinerado:: Bloque -> [Usuario] -> Usuario -> Bool
+
+elMenosAdinerado = (\unBloque unaListaDeUsuarios unUsuario -> all ( >= (billetera (unBloque unUsuario))) $ (map (billetera . (($) unBloque)) unaListaDeUsuarios))
 
  --BLOCKCHAIN--
 
