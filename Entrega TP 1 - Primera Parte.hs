@@ -118,17 +118,17 @@ testTransferencias = hspec $ do
 
 testUsuarioTransaccion = hspec $ do
    describe "Usuario luego de transacción" $ do
-     it "Se realiza la transacción 'Lucho cierra la cuenta' en Pepe directamente (Pepe cuenta con una billetera de 10 monedas) = 10 monedas" $ billetera (billeteraLuegoDeTransaccion lucho cierreDeCuenta pepe) `shouldBe` 10
-     it "Aplicamos la transaccion 'pepe le da 7 unidades a lucho' a Lucho directamente (Lucho cuenta con una billetera de 2 monedas) = 9 monedas" $ billetera (billeteraLuegoDeTransferencia pepe lucho 7 lucho) `shouldBe` 9
-     it "Aplicamos la transaccion 'pepe le da 7 unidades a lucho' y luego 'pepe deposita 5 monedas' a Pepe (Pepe cuenta con una billetera de 10 monedas) = 8" $ billetera ( ((billeteraLuegoDeTransaccion pepe (deposito 5) ) . (billeteraLuegoDeTransferencia pepe lucho 7)) pepe) `shouldBe` 8
+     it "Se realiza la transacción 'Lucho cierra la cuenta' en Pepe directamente (Pepe cuenta con una billetera de 10 monedas) = 10 monedas" $ billetera (usuarioLuegoDeTransaccion lucho cierreDeCuenta pepe) `shouldBe` 10
+     it "Aplicamos la transaccion 'pepe le da 7 unidades a lucho' a Lucho directamente (Lucho cuenta con una billetera de 2 monedas) = 9 monedas" $ billetera (usuarioLuegoDeTransferencia pepe lucho 7 lucho) `shouldBe` 9
+     it "Aplicamos la transaccion 'pepe le da 7 unidades a lucho' y luego 'pepe deposita 5 monedas' a Pepe (Pepe cuenta con una billetera de 10 monedas) = 8" $ billetera ( ((usuarioLuegoDeTransaccion pepe (deposito 5) ) . (usuarioLuegoDeTransferencia pepe lucho 7)) pepe) `shouldBe` 8
 
 
-billeteraLuegoDeTransaccion :: Usuario -> Evento -> Usuario -> Usuario
-billeteraLuegoDeTransaccion unaPersona unEvento personaAplicada = personaAplicada {
+usuarioLuegoDeTransaccion :: Usuario -> Evento -> Usuario -> Usuario
+usuarioLuegoDeTransaccion unaPersona unEvento personaAplicada = personaAplicada {
   billetera = (generadorTransacciones unaPersona unEvento personaAplicada) (billetera personaAplicada)
  }
-billeteraLuegoDeTransferencia :: Usuario -> Usuario -> Dinero -> Usuario -> Usuario
-billeteraLuegoDeTransferencia usuarioDeudor usuarioAcreedor unaCantidad usuarioAplicado = usuarioAplicado {
+usuarioLuegoDeTransferencia :: Usuario -> Usuario -> Dinero -> Usuario -> Usuario
+usuarioLuegoDeTransferencia usuarioDeudor usuarioAcreedor unaCantidad usuarioAplicado = usuarioAplicado {
   billetera = generadorTransferencias usuarioDeudor usuarioAcreedor unaCantidad usuarioAplicado  (billetera usuarioAplicado)
  }
 
