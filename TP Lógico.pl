@@ -1,3 +1,4 @@
+%PuntoA
 serie(himym).
 serie(futurama).
 serie(got).
@@ -41,6 +42,7 @@ temporada(got, 2, 10).
 temporada(himym, 1, 23).
 temporada(drHouse, 8, 16).
 
+%Anexo
 paso(futurama, 2, 3, muerte(seymourDiera)).
 paso(starWars, 10, 9, muerte(emperor)).
 paso(starWars, 1, 2, relacion(parentesco, anakin, rey)).
@@ -56,22 +58,27 @@ leDijo(aye, juan, got, relacion(amistad, tyrion, john)).
 leDijo(aye, maiu, got, relacion(amistad, tyrion, john)).
 leDijo(aye, gaston, got, relacion(amistad, tyrion, dragon)).
 
-
+%PuntoB
 esSpoiler(Serie, QuePaso):-
   serie(Serie),
   paso(Serie, _, _, QuePaso).
 
+%PuntoC
+leSpoileo(Persona1, Persona2, Serie):-
+  persona(Persona1),
+  persona(Persona2),
+  planeaVer(Persona2, Serie),
+  leDijo(Persona1, Persona2, Serie, QuePaso),
+  paso(Serie, _, _, QuePaso).
 
-  leSpoileo(Persona1, Persona2, Serie):-
-    persona(Persona1),
-    persona(Persona2),
-    planeaVer(Persona2, Serie),
-    leDijo(Persona1, Persona2, Serie, QuePaso),
-    paso(Serie, _, _, QuePaso).
+leSpoileo(Persona1, Persona2, Serie):-
+  persona(Persona1),
+  persona(Persona2),
+  mira(Persona2, Serie),
+  leDijo(Persona1, Persona2, Serie, QuePaso),
+  paso(Serie, _, _, QuePaso).
 
-  leSpoileo(Persona1, Persona2, Serie):-
-    persona(Persona1),
-    persona(Persona2),
-    mira(Persona2, Serie),
-    leDijo(Persona1, Persona2, Serie, QuePaso),
-    paso(Serie, _, _, QuePaso).
+%PuntoD
+televidenteResponsable(Persona):-
+  persona(Persona),
+  not(leSpoileo(Persona, _, _)).
