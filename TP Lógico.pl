@@ -56,6 +56,22 @@ leDijo(aye, juan, got, relacion(amistad, tyrion, john)).
 leDijo(aye, maiu, got, relacion(amistad, tyrion, john)).
 leDijo(aye, gaston, got, relacion(amistad, tyrion, dragon)).
 
+
 esSpoiler(Serie, QuePaso):-
   serie(Serie),
   paso(Serie, _, _, QuePaso).
+
+
+  leSpoileo(Persona1, Persona2, Serie):-
+    persona(Persona1),
+    persona(Persona2),
+    planeaVer(Persona2, Serie),
+    leDijo(Persona1, Persona2, Serie, QuePaso),
+    paso(Serie, _, _, QuePaso).
+
+  leSpoileo(Persona1, Persona2, Serie):-
+    persona(Persona1),
+    persona(Persona2),
+    mira(Persona2, Serie),
+    leDijo(Persona1, Persona2, Serie, QuePaso),
+    paso(Serie, _, _, QuePaso).
