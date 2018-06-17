@@ -12,7 +12,6 @@ persona(nico).
 persona(maiu).
 persona(gaston).
 persona(aye).
-persona(alf).
 
 mira(juan, himym).
 mira(juan, futurama).
@@ -27,7 +26,6 @@ mira(maiu, got).
 
 mira(gaston, hoc).
 %no ponemos a Alf por el Principio del Universo Cerrado, ya que no mira ninguna serie, pero lo podemos definir como persona
-
 esPopular(got).
 esPopular(hoc).
 esPopular(starWars).
@@ -57,3 +55,7 @@ leDijo(nico, juan, got, muerte(tyrion)).
 leDijo(aye, juan, got, relacion(amistad, tyrion, john)).
 leDijo(aye, maiu, got, relacion(amistad, tyrion, john)).
 leDijo(aye, gaston, got, relacion(amistad, tyrion, dragon)).
+
+esSpoiler(Serie, QuePaso):-
+  serie(Serie),
+  paso(Serie, _, _, QuePaso).
