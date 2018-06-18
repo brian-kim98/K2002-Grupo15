@@ -82,3 +82,30 @@ leSpoileo(Persona1, Persona2, Serie):-
 televidenteResponsable(Persona):-
   persona(Persona),
   not(leSpoileo(Persona, _, _)).
+
+%PuntoE
+esFuerte(relacion(parentesco,_,_)).
+esFuerte(muerte(_)).
+esFuerte(relacion(amorosa,_,_)).
+
+%predicado auxiliar
+esFuerteOPopular(Serie):-
+  esPopular(Serie).
+
+%para una serie especifica, se cumple que para toda temporada de esa serie, paso algo fuerte en cada una de ellas.
+esFuerteOPopular(Serie):-
+  temporada(Serie,_,_),
+  forall(temporada(Serie,Temporada,_),(paso(Serie,Temporada,_,Algo),esFuerte(Algo))).
+
+
+vieneZafando(Persona, Serie):-
+  esFuerteOPopular(Serie),
+  persona(Persona),
+  mira(Persona, Serie),
+  not(leSpoileo(_,Persona,Serie)).
+
+vieneZafando(Persona, Serie):-
+  esFuerteOPopular(Serie),
+  persona(Persona),
+  planeaVer(Persona, Serie),
+  not(leSpoileo(_,Persona,Serie)).
