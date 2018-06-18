@@ -63,6 +63,9 @@ esSpoiler(Serie, QuePaso):-
   serie(Serie),
   paso(Serie, _, _, QuePaso).
 
+  %podemos realizar ambos tipos de consultas, las individuales siempre son posibles ya que SWI-Prolog puede buscar mediante su motor de busqueda en la base de datos que le damos y asi dar True o False,
+  % y las existenciales son posibles gracias a que el predicado que realizamos es inversible
+
 %PuntoC
 leSpoileo(Persona1, Persona2, Serie):-
   persona(Persona1),
@@ -70,6 +73,9 @@ leSpoileo(Persona1, Persona2, Serie):-
   planeaVer(Persona2, Serie),
   leDijo(Persona1, Persona2, Serie, QuePaso),
   paso(Serie, _, _, QuePaso).
+
+  %podemos realizar ambos tipos de consultas, las individuales siempre son posibles ya que SWI-Prolog puede buscar mediante su motor de busqueda en la base de datos que le damos y asi dar True o False,
+  % y las existenciales son posibles gracias a que el predicado que realizamos es inversible
 
 leSpoileo(Persona1, Persona2, Serie):-
   persona(Persona1),
@@ -117,3 +123,8 @@ test(es_Spoiler_relacion_de_parentesco_entre_anakin_y_el_rey_en_starWars,nondet)
 test(no_es_Spoiler_muerte_de_pedro_en_starWars, fail):- esSpoiler(starWars, muerte(pedro)).
 test(no_es_Spoiler_relacion_de_padre_entre_anakin_y_lavezzi_en_starWars, fail):- esSpoiler(starWars, relacion(parentesco, anakin, lavezzi)).
 :- end_tests(esSpoiler).
+
+:- begin_tests(leSpoileo).
+test(gaston_le_spoileo_a_maiu_sobre_got):- leSpoileo(gaston, maiu, got).
+test(nico_le_spoileo_a_maiu_sobre_starWars,nondet):- leSpoileo(nico, maiu, starWars).
+:- end_tests(leSpoileo).
