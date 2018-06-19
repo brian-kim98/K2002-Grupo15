@@ -128,3 +128,15 @@ test(no_es_Spoiler_relacion_de_padre_entre_anakin_y_lavezzi_en_starWars, fail):-
 test(gaston_le_spoileo_a_maiu_sobre_got):- leSpoileo(gaston, maiu, got).
 test(nico_le_spoileo_a_maiu_sobre_starWars,nondet):- leSpoileo(nico, maiu, starWars).
 :- end_tests(leSpoileo).
+
+:- begin_tests(televidenteResponsable).
+test(juan_aye_y_maiu_son_televidentes_responsables, set(X == [juan, aye, maiu])):- televidenteResponsable(X).
+test(nico_no_es_televidente_responsable, fail):- televidenteResponsable(nico).
+test(gaston_no_es_televidente_responsable, fail):- televidenteResponsable(gaston).
+:- end_tests(televidenteResponsable).
+
+:-begin_tests(vieneZafando).
+test(maiu_no_zafa_con_ninguna_serie, fail):- vieneZafando(maiu, _).
+test(juan_viene_zafando_con_himym_got_y_hoc, set(X = [himym, got, hoc])):- vieneZafando(juan, X).
+test(solo_nico_viene_safando_con_starWars, set(X = [nico])):- vieneZafando(X, starWars).
+:- end_tests(vieneZafando).
