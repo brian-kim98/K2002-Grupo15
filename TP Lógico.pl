@@ -18,6 +18,10 @@ mira(juan, himym).
 mira(juan, futurama).
 mira(juan, got).
 
+%agregamos para entrega 2
+mira(pedro, got).
+%-----------------------
+
 mira(nico, starWars).
 mira(nico, got).
 
@@ -50,6 +54,12 @@ paso(starWars, 3, 2, relacion(parentesco, vader, luke)).
 paso(himym, 1, 1, relacion(amorosa, ted, robin)).
 paso(himym, 4, 3, relacion(amorosa, swarley, robin)).
 paso(got, 4, 5, relacion(amistad, tyrion, dragon)).
+
+%Agregamos para entrega 2
+leDijo(pedro, aye, got, relacion(amistad, tyrion, dragon)).
+leDijo(pedro, nico, got, relacion(parentesco, tyrion, dragon)).
+leDijo(nico, juan, futurama, muerte(seymourDiera)).
+%------------------------
 
 leDijo(gaston, maiu, got, relacion(amistad, tyrion, dragon)).
 leDijo(nico, maiu, starWars, relacion(parentesco, vader, luke)).
@@ -140,3 +150,13 @@ test(maiu_no_zafa_con_ninguna_serie, fail):- vieneZafando(maiu, _).
 test(juan_viene_zafando_con_himym_got_y_hoc, set(X = [himym, got, hoc])):- vieneZafando(juan, X).
 test(solo_nico_viene_safando_con_starWars, set(X = [nico])):- vieneZafando(X, starWars).
 :- end_tests(vieneZafando).
+
+
+%2da entrega
+%punto1
+malaPersona(Persona):-
+  forall(leDijo(Persona,Persona2,_,_),leSpoileo(Persona,Persona2,_)).
+
+malaPersona(Persona):-
+  leSpoileo(Persona,_,Serie),
+  not(mira(Persona,Serie)).
