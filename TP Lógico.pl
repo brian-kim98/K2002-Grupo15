@@ -92,10 +92,14 @@ televidenteResponsable(Persona):-
   not(leSpoileo(Persona, _, _)).
 
 %PuntoE
-esFuerte(Algo):-
-  paso(_,_,_,Algo),
-  Algo \= relacion(amistad,_,_),
-  Algo \= plotTwist(_).
+esFuerte(muerte(Algo)):-
+  paso(_,_,_,muerte(Algo)).
+
+esFuerte(relacion(amorosa,Alguien1,Alguien2)):-
+  paso(_,_,_,relacion(amorosa,Alguien1,Alguien2)).
+
+esFuerte(relacion(parentesco,Alguien1,Alguien2)):-
+  paso(_,_,_,relacion(parentesco,Alguien1,Alguien2)).
 
 %Agrego para el Punto2 de la entrega 2
 esFuerte(plotTwist(Giro)):-
