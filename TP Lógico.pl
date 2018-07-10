@@ -1,19 +1,4 @@
 %PuntoA
-serie(himym).
-serie(futurama).
-serie(got).
-serie(starWars).
-serie(onePiece).
-serie(hoc).
-serie(madMen).
-serie(drHouse).
-
-persona(juan).
-persona(nico).
-persona(maiu).
-persona(gaston).
-persona(aye).
-
 mira(juan, himym).
 mira(juan, futurama).
 mira(juan, got).
@@ -46,6 +31,13 @@ temporada(got, 2, 10).
 temporada(himym, 1, 23).
 temporada(drHouse, 8, 16).
 
+%Agrego para el punto2 de la entrega 2
+paso(got, 3, 2, plotTwist([suenio, sinPiernas])).
+paso(got, 3, 12, plotTwist([fuego, boda])).
+paso(superCampeones, 9, 9, plotTwist([suenio, coma, sinPiernas])).
+paso(drHouse, 8, 7, plotTwist([coma, pastillas])).
+%-----
+
 %Anexo
 paso(futurama, 2, 3, muerte(seymourDiera)).
 paso(starWars, 10, 9, muerte(emperor)).
@@ -70,39 +62,35 @@ leDijo(aye, gaston, got, relacion(amistad, tyrion, dragon)).
 
 %PuntoB
 esSpoiler(Serie, QuePaso):-
-  serie(Serie),
   paso(Serie, _, _, QuePaso).
 
   %podemos realizar ambos tipos de consultas, las individuales siempre son posibles ya que SWI-Prolog puede buscar mediante su motor de busqueda en la base de datos que le damos y asi dar True o False,
   % y las existenciales son posibles gracias a que el predicado que realizamos es inversible
+
+miraOPlaneaVer(Persona, Serie):-
+  planeaVer(Persona, Serie).
+
+miraOPlaneaVer(Persona, Serie):-
+  mira(Persona, Serie).
 
 %PuntoC
 leSpoileo(Persona1, Persona2, Serie):-
-  persona(Persona1),
-  persona(Persona2),
-  planeaVer(Persona2, Serie),
+  miraOPlaneaVer(Persona2, Serie),
   leDijo(Persona1, Persona2, Serie, QuePaso),
-  paso(Serie, _, _, QuePaso).
-
+  esSpoiler(Serie, QuePaso).
   %podemos realizar ambos tipos de consultas, las individuales siempre son posibles ya que SWI-Prolog puede buscar mediante su motor de busqueda en la base de datos que le damos y asi dar True o False,
   % y las existenciales son posibles gracias a que el predicado que realizamos es inversible
 
-leSpoileo(Persona1, Persona2, Serie):-
-  persona(Persona1),
-  persona(Persona2),
-  mira(Persona2, Serie),
-  leDijo(Persona1, Persona2, Serie, QuePaso),
-  paso(Serie, _, _, QuePaso).
-
 %PuntoD
 televidenteResponsable(Persona):-
-  persona(Persona),
+  miraOPlaneaVer(Persona, _),
   not(leSpoileo(Persona, _, _)).
 
 %PuntoE
-esFuerte(relacion(parentesco,_,_)).
-esFuerte(muerte(_)).
-esFuerte(relacion(amorosa,_,_)).
+esFuerte(Algo):-
+  paso(_,_,_,Algo),
+  Algo \= relacion(amistad,_,_),
+  Algo \= plotTwist(_).
 
 %predicado auxiliar
 esFuerteOPopular(Serie):-
@@ -113,17 +101,19 @@ esFuerteOPopular(Serie):-
   temporada(Serie,_,_),
   forall(temporada(Serie,Temporada,_),(paso(Serie,Temporada,_,Algo),esFuerte(Algo))).
 
+%aux para el PUNTO2 de la entrega 2
+pasoAFinalDeTemporada(Giro):-
+  paso(Serie,Temporada,Capitulo,plotTwist(Giro)),
+  temporada(Serie,Temporada,Capitulo).
+
+%Agrego para el Punto2 de la entrega 2
+esFuerte(plotTwist(Giro)):-
+  pasoAFinalDeTemporada(Giro),
+  not(esCliche(Giro)).
 
 vieneZafando(Persona, Serie):-
   esFuerteOPopular(Serie),
-  persona(Persona),
-  mira(Persona, Serie),
-  not(leSpoileo(_,Persona,Serie)).
-
-vieneZafando(Persona, Serie):-
-  esFuerteOPopular(Serie),
-  persona(Persona),
-  planeaVer(Persona, Serie),
+  miraOPlaneaVer(Persona, Serie),
   not(leSpoileo(_,Persona,Serie)).
 
 %tests
@@ -160,3 +150,13 @@ malaPersona(Persona):-
 malaPersona(Persona):-
   leSpoileo(Persona,_,Serie),
   not(mira(Persona,Serie)).
+
+%Punto2
+sucesoFuerte(Serie,Suceso):-
+  paso(Serie,_,_,Suceso),
+  esFuerte(Suceso).
+
+esCliche(Giro):-
+  paso(Serie1,_,_,plotTwist(Giro)),
+  paso(Serie2,_,_,plotTwist(Giro)),
+  Serie2 \= Serie1.
