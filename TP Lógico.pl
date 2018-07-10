@@ -17,6 +17,8 @@ mira(maiu, got).
 mira(gaston, hoc).
 %no ponemos a Alf por el Principio del Universo Cerrado, ya que no mira ninguna serie, pero lo podemos definir como persona
 
+%tampoco agregamos la Serie Mad Men ya que nadie mira esa serie, por lo tanto al utilizar el principio del universo cerrado, cuando se consulte por ella dara false
+
 planeaVer(juan, hoc).
 planeaVer(aye, got).
 planeaVer(gaston, himym).
@@ -26,6 +28,8 @@ temporada(got, 3, 12).
 temporada(got, 2, 10).
 temporada(himym, 1, 23).
 temporada(drHouse, 8, 16).
+%no agregamos las temporadas de la serie Mad Men ya que por princpio de universo cerrado, cuando se consulte por ella, respondera false,
+% ya que no sabemos nada acerca de esta serie
 
 %Agrego para el punto2 de la entrega 2
 paso(got, 3, 2, plotTwist([suenio, sinPiernas])).
@@ -195,3 +199,25 @@ fullSpoil(Spoileador, Spoileado):-
   amigo(AmigoDelSpoileado, Spoileado),
   Spoileado \= Spoileador,
   fullSpoil(Spoileador, AmigoDelSpoileado).
+
+  %punto 5 - Tests
+  :-begin_tests(malaPersona).
+  test(gaston_y_nico_son_malas_personas, set(Y=[nico, gaston])):- malaPersona(Y).
+  test(pedro_no_es_mala_persona,fail):- malaPersona(pedro).
+  :- end_tests(malaPersona).
+
+  :-begin_tests(esFuerte).
+  test(la_muerte_de_seymourdiera_es_algo_fuerte_en_futurama , nondet):- esFuerte(muerte(seymourDiera)).
+  test(el_plottwist_con_fuego_y_boda_es_algo_fuerte_en_got , nondet):- esFuerte(plotTwist([fuego, boda])).
+  test(el_plotTwist_con_la_palabra_suenio_no_es_fuerte , fail):- esFuerte(plotTwist([suenio, sinPiernas])).
+  :- end_tests(esFuerte).
+
+  :-begin_tests(esPopular).
+  test(futurama_OnePiece_y_Himym_no_son_populares , set(X=[futurama, onePiece, himym]), fail):- esPopular(X).
+  :-end_tests(esPopular).
+
+  :-begin_tests(fullSpoil).
+  test(nico_hizo_fullSpoil_a_juan_aye_y_maiu , set(X = [aye, juan, maiu, gaston])):- fullSpoil(nico,X).
+  test(gaston_hizo_fullSpoil_a_maiu_juan_y_aye, set(Y = [maiu, juan, aye])):- fullSpoil(gaston,Y).
+  test(maiu_no_fullSpoil_a_nadie , set(Z = [])):- fullSpoil(maiu,Z).
+  :-end_tests(fullSpoil).
