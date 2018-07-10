@@ -160,3 +160,37 @@ esCliche(Giro):-
   paso(Serie1,_,_,plotTwist(Giro)),
   paso(Serie2,_,_,plotTwist(Giro)),
   Serie2 \= Serie1.
+
+%Punto3
+esPopular(got).
+esPopular(hoc).
+esPopular(starWars).
+
+esPopular(Serie):-
+  puntajePopularidad(Serie, Puntaje1),
+  puntajePopularidad(starWars, Puntaje2),
+  Puntaje1 >= Puntaje2.
+
+puntajePopularidad(Serie, Puntaje):-
+  cantidadDeEspectadores(Serie, Cantidad1),
+  cantidadDeHabladores(Serie, Cantidad2),
+  Puntaje is Cantidad1 * Cantidad2.
+
+cantidadDeEspectadores(Serie, Cantidad):-
+  mira(_, Serie),
+  findall(Espectador, mira(Espectador, Serie), Espectadores),
+  length(Espectadores, Cantidad).
+
+cantidadDeHabladores(Serie, Cantidad):-
+  mira(_, Serie),
+  findall(Hablador, leDijo(Hablador,_,Serie,_), Habladores),
+  length(Habladores, Cantidad).
+
+  %punto 4
+fullSpoil(Spoileador, Spoileado):-
+  leSpoileo(Spoileador, Spoileado, _).
+
+fullSpoil(Spoileador, Spoileado):-
+  amigo(AmigoDelSpoileado, Spoileado),
+  Spoileado \= Spoileador,
+  fullSpoil(Spoileador, AmigoDelSpoileado).
