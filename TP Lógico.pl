@@ -92,6 +92,11 @@ esFuerte(Algo):-
   Algo \= relacion(amistad,_,_),
   Algo \= plotTwist(_).
 
+%Agrego para el Punto2 de la entrega 2
+esFuerte(plotTwist(Giro)):-
+  pasoAFinalDeTemporada(Giro),
+  not(esCliche(Giro)).
+
 %predicado auxiliar
 esFuerteOPopular(Serie):-
   esPopular(Serie).
@@ -105,11 +110,6 @@ esFuerteOPopular(Serie):-
 pasoAFinalDeTemporada(Giro):-
   paso(Serie,Temporada,Capitulo,plotTwist(Giro)),
   temporada(Serie,Temporada,Capitulo).
-
-%Agrego para el Punto2 de la entrega 2
-esFuerte(plotTwist(Giro)):-
-  pasoAFinalDeTemporada(Giro),
-  not(esCliche(Giro)).
 
 vieneZafando(Persona, Serie):-
   esFuerteOPopular(Serie),
