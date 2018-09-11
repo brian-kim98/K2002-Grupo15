@@ -1,52 +1,67 @@
-object rolando{
-	const property hechizos = [espectroMalefico, hechizoBasico]
-	const property artefactos = [ espadaDelDestino, collarDivino, mascaraOscura ]
-	var property hechizoPreferido = espectroMalefico
+object rolando {
+
 	var property basePoder = 3
+	var property hechizoPreferido = espectroMalefico
 	var property basePelea = 1
+	const property hechizos = [ espectroMalefico, hechizoBasico ]
+	const property artefactos = []
 
-	method nivelDeHechiceria() = self.basePoder() * self.hechizoPreferido().poder() + fuerzaOscura.valor()
+	method nivelDeHechiceria() = self.basePoder() * self.hechizoPreferido().unidadesDeLucha(self) + fuerzaOscura.valor()
 
-	method hechizos(nuevosHechizos){
-		self.hechizos().clear()
-		self.hechizos().addAll(nuevosHechizos)}
-
-	method hechizoPreferido(nuevoPreferido){
-		if(self.hechizos().contains(nuevoPreferido)){
-			hechizoPreferido = nuevoPreferido
-		}
+	method artefactos(nuevosArtefactos) {
+		self.artefactos().addAll(nuevosArtefactos)
 	}
 
-	method seCreePoderoso() = self.hechizoPreferido().esPoderoso()
+	method agregaLosArtefactos(unosArtefactos) = self.artefactos().addAll(unosArtefactos)
 
-	method agregarArtefacto(unArtefacto) = self.artefactos().add(unArtefacto)
+	method agregaArtefacto(unArtefacto) = self.agregaLosArtefactos([ unArtefacto ])
 
-	method removerArtefacto(unArtefacto) = self.artefactos().remove(unArtefacto)
+	method removeArtefacto(unArtefacto) = self.artefactos().remove(unArtefacto)
 
-	method removerArtefactos() = self.artefactos().clear()
+	method removeTodosLosArtefactos() = self.artefactos().clear()
 
 	method valorDeLucha() = self.basePelea() + self.artefactos().sum({ artefacto => artefacto.unidadesDeLucha(self) })
 
 	method mejorLuchadorQueMago() = self.valorDeLucha() > self.nivelDeHechiceria()
+
+	method estasCargado() = self.artefactos().size() >= 5
+
+	method mejorArtefacto() = self.artefactos().filter({artefacto => artefacto != espejo}).max({artefacto => artefacto.unidadesDeLucha(self)})
+
 }
 
-object espectroMalefico{
+object espectroMalefico {
+
 	var property nombre = "Espectro Maléfico"
+
 	method poder() = self.nombre().size()
-	method esPoderoso() = self.poder() > 15
+
+	method sosPoderoso() = self.poder() > 15
+
 	method unidadesDeLucha(portador) = self.poder()
+
 }
 
-object hechizoBasico{
+object hechizoBasico {
+
 	method poder() = 10
-	method esPoderoso() = false
+
+	method sosPoderoso() = false
+
 	method unidadesDeLucha(portador) = self.poder()
+
 }
 
-object fuerzaOscura{
+object fuerzaOscura {
+
 	var valor = 5
+
 	method valor() = valor
-	method eclipse(){valor *= 2}
+
+	method eclipse() {
+		valor *= 2
+	}
+
 }
 
 object espadaDelDestino {
@@ -57,7 +72,7 @@ object espadaDelDestino {
 
 object collarDivino {
 
-	var property perlas = 1
+	var property perlas = 5
 
 	method unidadesDeLucha(portador) = perlas
 
@@ -69,37 +84,44 @@ object mascaraOscura {
 
 }
 
-object armadura{
-	const property refuerzos = [cotaDeMalla, hechizoBasico, espectroMalefico, bendicion]
-	var property refuerzoElegido = null
+class Armadura {
 
-	method refuerzoElegido(nuevoRefuerzo){
-		if(self.refuerzos().contains(nuevoRefuerzo)){
-			refuerzoElegido = nuevoRefuerzo
+	const property refuerzosPosibles = [ cotaDeMallas, bendicion, espectroMalefico, hechizoBasico ]
+	var property refuerzo = null
+
+	method refuerzo(nuevoRefuerzo) {
+		if (self.refuerzosPosibles().contains(nuevoRefuerzo)) {
+			refuerzo = nuevoRefuerzo
 		}
 	}
 
-	method unidadesDeLucha(portador){
-		if(self.refuerzoElegido() != null){
-			return 2 + refuerzoElegido.unidadesDeLucha(portador)
-		}
-		else{
-			return 2
-		}
+	method unidadesDeLucha(portador) = if (self.refuerzo() != null) {
+		2 + self.refuerzo().unidadesDeLucha(portador)
+	} else {
+		return 2
 	}
+
 }
-object cotaDeMalla{method unidadesDeLucha(portador) = 1}
 
-object bendicion{
+object cotaDeMallas {
+
+	method unidadesDeLucha(portador) = 1
+
+}
+
+object bendicion {
+
 	method unidadesDeLucha(portador) = portador.nivelDeHechiceria()
+
 }
 
-object espejoFantastico{
+object espejo {
+
 	method cantidadDeArtefactos(portador) = portador.artefactos().size()
 
 	method unidadesDeLucha(portador){
 		if(self.cantidadDeArtefactos(portador) > 1){
-			return portador.artefactos().filter({artefacto => artefacto != self}).max({artefacto => artefacto.unidadesDeLucha(portador)})
+			return portador.mejorArtefacto().unidadesDeLucha(portador)
 		}
 		else{
 			return 0
@@ -109,6 +131,11 @@ object espejoFantastico{
 
 object libroDeHechizos{
 	const property hechizos = []
-	method hechizosPoderosos() = self.hechizos().filter({hechizo => hechizo.esPoderoso()})
-	method unidadesDeLucha() = self.hechizosPoderosos().sum({hechizo => hechizo.unidadesDeLucha()})
+
+	method hechizos(nuevosHechizos){
+		self.hechizos().clear()
+		self.hechizos().addAll(nuevosHechizos)
+	}
+	method hechizosPoderosos() = self.hechizos().filter({hechizo => hechizo.sosPoderoso()})
+	method unidadesDeLucha(portador) = self.hechizosPoderosos().sum({hechizo => hechizo.unidadesDeLucha(portador)})
 }
