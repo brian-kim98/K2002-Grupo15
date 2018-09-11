@@ -1,0 +1,57 @@
+import Roland.*
+
+describe "(PARTE 2)"{
+
+	fixture {
+
+		collarDivino.perlas(5)
+
+		rolando.agregaLosArtefactos([espadaDelDestino,collarDivino,mascaraOscura])
+
+
+	}
+
+	test"Si rolando NO TIENE artefactos, su habilidad de lucha es 1"{
+
+		rolando.removeTodosLosArtefactos()
+
+		assert.equals(rolando.valorDeLucha(),1)
+	}
+
+	test "Con sus artefactos por defecto, rolando tiene 13 de valor de lucha"{
+
+		assert.equals(rolando.valorDeLucha(),13)
+	}
+
+	test "Si el collar tiene tres perlas, rolando pasa a tener 11 de valor de lucha"{
+
+		collarDivino.perlas(3)
+
+		assert.equals(rolando.valorDeLucha(),11)
+
+	}
+
+	test "El valor Base de rolando ahora es 8, por lo que su nivel de lucha es 20"{
+
+		rolando.basePelea(8)
+
+		assert.equals(rolando.valorDeLucha(),20)
+
+	}
+
+	test "Si ocurre un eclipse, el valor de lucha de la Mascara Oscura es de 5"{
+
+		fuerzaOscura.eclipse()
+
+		assert.equals(mascaraOscura.unidadesDeLucha(rolando),5)
+
+	}
+
+	test "Si rolando se quita la mascara oscura, su valor de lucha es de 9"{
+
+		rolando.removeArtefacto(mascaraOscura)
+
+		assert.equals(rolando.valorDeLucha(),9)
+
+	}
+}
