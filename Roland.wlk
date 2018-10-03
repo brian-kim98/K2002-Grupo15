@@ -6,11 +6,15 @@ object rolando {
 	const property hechizos = [ espectroMalefico, hechizoBasico ]
 	const property artefactos = []
 
+	method basePoder() = 3
+
 	method nivelDeHechiceria() = self.basePoder() * self.hechizoPreferido().unidadesDeLucha(self) + mundo.fuerzaOscura()
 
 	method artefactos(nuevosArtefactos) {
 		self.artefactos().addAll(nuevosArtefactos)
 	}
+
+	method teCreesPoderoso() = self.hechizoPreferido().sosPoderoso()
 
 	method agregaLosArtefactos(unosArtefactos) = self.artefactos().addAll(unosArtefactos)
 
@@ -20,7 +24,9 @@ object rolando {
 
 	method removeTodosLosArtefactos() = self.artefactos().clear()
 
-	method valorDeLucha() = self.basePelea() + self.artefactos().sum({ artefacto => artefacto.unidadesDeLucha(self) })
+	method valorDeLucha() = self.basePelea() + self.poderDeArtefactos
+
+	method poderDeArtefactos() = self.artefactos().sum({ artefacto => artefacto.unidadesDeLucha(self) })
 
 	method mejorLuchadorQueMago() = self.valorDeLucha() > self.nivelDeHechiceria()
 
