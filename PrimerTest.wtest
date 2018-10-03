@@ -64,7 +64,7 @@ describe "(PARTE 1)" {
 
 
 
-    fuerzaOscura.eclipse()
+    mundo.eclipse()
 
 
 

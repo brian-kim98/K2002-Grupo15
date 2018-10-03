@@ -6,7 +6,7 @@ object rolando {
 	const property hechizos = [ espectroMalefico, hechizoBasico ]
 	const property artefactos = []
 
-	method nivelDeHechiceria() = self.basePoder() * self.hechizoPreferido().unidadesDeLucha(self) + fuerzaOscura.valor()
+	method nivelDeHechiceria() = self.basePoder() * self.hechizoPreferido().unidadesDeLucha(self) + mundo.fuerzaOscura()
 
 	method artefactos(nuevosArtefactos) {
 		self.artefactos().addAll(nuevosArtefactos)
@@ -52,14 +52,14 @@ object hechizoBasico {
 
 }
 
-object fuerzaOscura {
+object mundo {
 
-	var valor = 5
+	var property fuerzaOscura = 5
 
 	method valor() = valor
 
 	method eclipse() {
-		valor *= 2
+		fuerzaOscura *= 2
 	}
 
 }
@@ -80,7 +80,7 @@ object collarDivino {
 
 object mascaraOscura {
 
-	method unidadesDeLucha(portador) = 4.max(fuerzaOscura.valor() / 2)
+	method unidadesDeLucha(portador) = 4.max(mundo.fuerzaOscura() / 2)
 
 }
 
@@ -131,6 +131,8 @@ object espejo {
 
 object libroDeHechizos{
 	const property hechizos = []
+
+	method poder() = self.hechizosPoderosos().sum({hechizo => hechizo.poder()})
 
 	method hechizos(nuevosHechizos){
 		self.hechizos().clear()

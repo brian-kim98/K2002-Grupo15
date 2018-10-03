@@ -41,7 +41,7 @@ describe "(PARTE 2)"{
 
 	test "Si ocurre un eclipse, el valor de lucha de la Mascara Oscura es de 5"{
 
-		fuerzaOscura.eclipse()
+		mundo.eclipse()
 
 		assert.equals(mascaraOscura.unidadesDeLucha(rolando),5)
 
