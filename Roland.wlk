@@ -23,7 +23,7 @@ object rolando {
 
 	method removeTodosLosArtefactos() = self.artefactos().clear()
 
-	method valorDeLucha() = self.basePelea() + self.poderDeArtefactos
+	method valorDeLucha() = self.basePelea() + self.poderDeArtefactos()
 
 	method poderDeArtefactos() = self.artefactos().sum({ artefacto => artefacto.unidadesDeLucha(self) })
 
@@ -33,7 +33,7 @@ object rolando {
 
 	method mejorArtefacto() = self.artefactosSin(espejo).max({artefacto => artefacto.unidadesDeLucha(self)})
 
-  method artefactosSin(unArtefacto) = self.artefactos().filter({artefacto => artefacto != unArtefacto})
+	method artefactosSin(unArtefacto) = self.artefactos().filter({artefacto => artefacto != unArtefacto})
 
 }
 
@@ -62,8 +62,6 @@ object hechizoBasico {
 object mundo {
 
 	var property fuerzaOscura = 5
-
-	method valor() = valor
 
 	method eclipse() {
 		fuerzaOscura *= 2
@@ -103,7 +101,7 @@ class Armadura {
 
 }
 
-object ningunRefuerzo(){
+object ningunRefuerzo{
 	method unidadesDeLucha(portador) = 0
 
 }
