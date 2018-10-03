@@ -31,7 +31,7 @@ object rolando {
 
 	method estasCargado() = self.artefactos().size() >= 5
 
-	method mejorArtefacto() = self.artefactosSin().max({artefacto => artefacto.unidadesDeLucha(self)})
+	method mejorArtefacto() = self.artefactosSin(espejo).max({artefacto => artefacto.unidadesDeLucha(self)})
 
   method artefactosSin(unArtefacto) = self.artefactos().filter({artefacto => artefacto != unArtefacto})
 
