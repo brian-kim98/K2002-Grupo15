@@ -92,20 +92,18 @@ object mascaraOscura {
 
 class Armadura {
 
-	const property refuerzosPosibles = [ cotaDeMallas, bendicion, espectroMalefico, hechizoBasico ]
-	var property refuerzo = null
+	var property refuerzo
 
 	method refuerzo(nuevoRefuerzo) {
-		if (self.refuerzosPosibles().contains(nuevoRefuerzo)) {
 			refuerzo = nuevoRefuerzo
-		}
 	}
 
-	method unidadesDeLucha(portador) = if (self.refuerzo() != null) {
-		2 + self.refuerzo().unidadesDeLucha(portador)
-	} else {
-		return 2
-	}
+	method unidadesDeLucha(portador) = 2 + self.refuerzo().unidadesDeLucha(portador)
+
+}
+
+object ningunRefuerzo(){
+	method unidadesDeLucha(portador) = 0
 
 }
 

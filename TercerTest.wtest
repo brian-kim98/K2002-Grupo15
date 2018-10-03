@@ -3,10 +3,10 @@ import Roland.*
 
 
 describe "(Parte 3)"{
- 
 
 
-  const armaduraSinRefuerzo = new Armadura()
+
+  const armaduraSinRefuerzo = new Armadura(refuerzo = ningunRefuerzo)
 
   const armaduraConRefuerzo = new Armadura()
 
