@@ -1,6 +1,5 @@
 object rolando {
 
-	var property basePoder = 3
 	var property hechizoPreferido = espectroMalefico
 	var property basePelea = 1
 	const property artefactos = []
@@ -34,6 +33,8 @@ object rolando {
 	method mejorArtefacto() = self.artefactosSin(espejo).max({artefacto => artefacto.unidadesDeLucha(self)})
 
 	method artefactosSin(unArtefacto) = self.artefactos().filter({artefacto => artefacto != unArtefacto})
+
+	method cantidadDeArtefactosSin(unArtefacto) = self.artefactosSin(unArtefacto).size()
 
 }
 
@@ -123,7 +124,7 @@ object espejo {
 	method cantidadDeArtefactos(portador) = portador.artefactos().size()
 
 	method unidadesDeLucha(portador){
-		if(self.cantidadDeArtefactos(portador) > 1){
+		if(portador.cantidadDeArtefactosSin(self) >= 1){
 			return portador.mejorArtefacto().unidadesDeLucha(portador)
 		}
 		else{
