@@ -1,4 +1,4 @@
-object rolando {
+class Personaje {
 
 	var property hechizoPreferido = espectroMalefico
 	var property basePelea = 1
@@ -60,6 +60,15 @@ object hechizoBasico {
 
 }
 
+class Logos{
+	var property nombre = null
+	var property multiplicador = null
+	method poder() = self.nombre().size() * self.multiplicador()
+	method sosPoderoso() = self.poder() > 15
+	method unidadesDeLucha(portador) = self.poder()
+	
+}
+
 object mundo {
 
 	var property fuerzaOscura = 5
@@ -70,36 +79,36 @@ object mundo {
 
 }
 
-object espadaDelDestino {
-
-	method unidadesDeLucha(portador) = 3
+class Arma{
+	const property unidad = 3
+	method unidadesDeLucha(portador) = self.unidad()
 
 }
 
-object collarDivino {
+class CollarDivino {
 
 	var property perlas = 5
 
-	method unidadesDeLucha(portador) = perlas
+	method unidadesDeLucha(portador) = self.perlas()
 
 }
 
-object mascaraOscura {
-
-	method unidadesDeLucha(portador) = 4.max(mundo.fuerzaOscura() / 2)
-
-}
-
-class Armadura {
-
-	var property refuerzo
-
-	method refuerzo(nuevoRefuerzo) {
-			refuerzo = nuevoRefuerzo
+class MascaraOscura{
+	var property indiceDeOscuridad = 0
+	var property minimo = 4
+	method indiceDeOscuridad(unIndice){
+		indiceDeOscuridad = unIndice.max(0).min(1)
 	}
+	method unidadesDeLucha(portador) = (self.minimo()).max(mundo.fuerzaOscura()/2 * self.indiceDeOscuridad())
+}
 
-	method unidadesDeLucha(portador) = 2 + self.refuerzo().unidadesDeLucha(portador)
-
+class Armadura{
+	var property refuerzo = ningunRefuerzo
+	var property valorBase = 2
+	
+	method unidadesDeLucha(portador){
+			return self.valorBase() + self.unidadesDeLucha(portador)
+	}
 }
 
 object ningunRefuerzo{
@@ -107,11 +116,11 @@ object ningunRefuerzo{
 
 }
 
-object cotaDeMallas {
-
-	method unidadesDeLucha(portador) = 1
-
+class CotaDeMallas{
+	var property cantidadUnidadDeLucha = 1
+	method unidadesDeLucha(portador) = self.cantidadUnidadDeLucha()
 }
+
 
 object bendicion {
 
@@ -133,7 +142,7 @@ object espejo {
 	}
 }
 
-object libroDeHechizos{
+class LibroDeHechizos{
 	const property hechizos = []
 
 	method poder() = self.hechizosPoderosos().sum({hechizo => hechizo.poder()})
@@ -144,4 +153,5 @@ object libroDeHechizos{
 	}
 	method hechizosPoderosos() = self.hechizos().filter({hechizo => hechizo.sosPoderoso()})
 	method unidadesDeLucha(portador) = self.hechizosPoderosos().sum({hechizo => hechizo.unidadesDeLucha(portador)})
+	method hechizosSin(unHechizo) = self.hechizos().filter({hechizo => hechizo != unHechizo})
 }
