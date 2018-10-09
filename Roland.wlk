@@ -42,6 +42,41 @@ class Personaje{
 		self.monedas(acumulador)
 	}
 
+	method compraArtefacto(artefactoAComprar) {
+		if(artefactoAComprar.precio() <= self.monedas() ){
+
+			self.agregaArtefacto(artefactoAComprar)
+
+			var acumulador = self.monedas() - artefactoAComprar.precio()
+
+			 self.monedas(acumulador)
+
+			return self.monedas()
+
+		}else{
+			return self.monedas()
+		}
+
+	}
+
+	method compraHechizo(nuevoHechizo){
+		var descuento = self.hechizoPreferido().precio() / 2
+
+		self.hechizoPreferido(nuevoHechizo)
+
+		if (descuento + self.monedas() >= nuevoHechizo.precio() ){
+			self.hechizoPreferido(nuevoHechizo)
+
+			var acumulador = self.monedas() - (nuevoHechizo.precio() - descuento).max(0)
+
+			self.monedas(acumulador)
+
+			return self.monedas()
+
+		} else {
+			return self.monedas()
+		}
+	}
 }
 
 object hechizoBasico{
@@ -94,7 +129,7 @@ class Armadura{
 			return self.valorBase() + self.refuerzo().unidadesDeLucha(portador)
 	}
 
-	method precio() = self.refuerzo().precioRefuerzo()
+	method precio() = self.refuerzo().precioRefuerzo(self)
 }
 
 object ningunRefuerzo{
