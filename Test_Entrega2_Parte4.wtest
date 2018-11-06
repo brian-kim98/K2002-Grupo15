@@ -1,0 +1,107 @@
+import rolando.*
+
+describe "(Parte 4)"{
+	const alacachulaCachicomula = new Logos(nombre = "alacachula cachicomula" , multiplicador = 1)
+	
+	const espada = new Arma(peso = 0)
+	const collarDivino = new CollarDivino(peso = 0, perlas = 5)
+	const armaduraSinRefuerzo = new Armadura(peso = 0, refuerzo = ningunRefuerzo)
+	const cotaDeCinco = new CotaDeMalla(cantidadUnidadDeLucha = 5)
+	const armaduraConCota = new Armadura(peso = 0, refuerzo = cotaDeCinco)
+	
+	const thor = new Personaje(hechizoPreferido = hechizoBasico)
+	const xenia = new Personaje(hechizoPreferido = alacachulaCachicomula)
+	const loki = new Personaje( hechizoPreferido = hechizoBasico )
+	
+
+
+	fixture{
+
+		loki.monedas(5)
+	}
+
+	test "El Precio de lista de alacachula cachicomula es 22"{
+
+		assert.equals(alacachulaCachicomula.precio(),22)
+	}
+
+	test "Xenia canjea por un Hechizo Basico y le quedan 100 monedas"{
+		
+		xenia.compraHechizo(hechizoBasico)
+		
+		assert.equals(xenia.monedas(),100)
+	}
+
+	test "Thor canjea por alacachula cachicomula y le quedan 83 monedas"{
+		
+		thor.compraHechizo(alacachulaCachicomula)
+		
+		assert.equals(thor.monedas(),83)
+	}
+
+	test "thor canjea dos veces el hechizo Basico, y queda con 90 monedas"{
+
+		thor.compraHechizo(hechizoBasico)
+		thor.compraHechizo(hechizoBasico)
+		
+		assert.equals(thor.monedas(),90)
+	}
+
+	test "loki intenta canjear por alacachula cachicomula, pero queda con las mismas monedas"{
+		
+		const excepcionPorMonedas = new NoTenesMonedas()
+		
+		const cuandoLokiCompra = {loki.compraHechizo(alacachulaCachicomula)}
+		
+		assert.throwsExceptionLike(excepcionPorMonedas,cuandoLokiCompra)
+	}
+
+	test "xenia compra una esapada, un collar divino, una armadura sin refuerzo y otra con cota de maya y se uqeda con 70,5 monedas"{
+
+		xenia.compraArtefacto(espada)
+		xenia.compraArtefacto(collarDivino)
+		xenia.compraArtefacto(armaduraSinRefuerzo)
+		xenia.compraArtefacto(armaduraConCota)
+
+		assert.equals(xenia.monedas(),70.5)
+	}
+
+	test "xenia compra a Mock Hmnos. una esapada, un collar divino, una armadura sin refuerzo y otra con cota de maya y se tiene 4 artefactos"{
+
+		xenia.compraArtefacto(espada)
+		xenia.compraArtefacto(collarDivino)
+		xenia.compraArtefacto(armaduraSinRefuerzo)
+		xenia.compraArtefacto(armaduraConCota)
+
+		assert.equals(xenia.artefactos().size(),4)
+	}
+
+	test "thor compra una armadura con bendicion y otra con hechizo alacachula, se queda con 74 monedas"{
+
+		const armaduraBendita = new Armadura(peso = 0, refuerzo = bendicion)
+		const armaduraAlacachula = new Armadura(peso = 0, refuerzo = alacachulaCachicomula)
+
+		thor.compraArtefacto(armaduraBendita)
+		thor.compraArtefacto(armaduraAlacachula)
+
+		assert.equals(thor.monedas(), 74)
+	}
+
+	test "loki quiere comprar el espejo, pero no puede y se queda con las mismas monedas"{
+		
+		const excepcionPorMonedas = new NoTenesMonedas("Te faltan un par de monedas en la billetera para comprar el artefacto")
+		
+		const alComprarEspejo = {loki.compraArtefacto(espejoFantastico)}
+		
+		assert.throwsExceptionLike(excepcionPorMonedas,alComprarEspejo)
+	}
+
+	test "xenia canjea el libro de hechizos que contiene el hechizo alacachula y el hechizo basico, se queda con 69 monedas"{
+
+		const libroMagic = new LibroDeHechizos(hechizos = [alacachulaCachicomula, hechizoBasico])
+		
+		xenia.compraHechizo(libroMagic)
+		
+		assert.equals(xenia.monedas(),69)
+	}
+}
