@@ -1,0 +1,28 @@
+import rolando.*
+import Hechizos.*
+import Artefactos.*
+import Refuerzos.*
+
+describe "(Parte 1)"{
+	
+	const hechizoComercial = new HechizoComercial(nombre = "el hechizo Comercial", multiplicador = 2)
+	const espectroMalefico = new Logos(nombre = "Espectro Malefico", multiplicador = 3 )
+	
+	const furibunda = new Personaje(hechizoPreferido = hechizoComercial, capacidadDeCarga = 200)
+	
+	test "El nivel de hechizeria de furibunda es de 29"{
+		
+		
+		assert.equals(furibunda.nivelDeHechiceria(), 29)
+	}
+	
+	test "El hechizo Comercial no es poderoso"{
+		
+		assert.notThat(hechizoComercial.sosPoderoso())
+	}
+	
+	test "El espectro Malefico es Poderoso"{
+		
+		assert.that(espectroMalefico.sosPoderoso())
+	}
+}

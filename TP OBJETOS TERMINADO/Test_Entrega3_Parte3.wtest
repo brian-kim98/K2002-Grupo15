@@ -1,0 +1,33 @@
+import rolando.*
+import Hechizos.*
+import Artefactos.*
+import Refuerzos.*
+
+describe "(Parte 3)"{
+	
+	const mascaraClara = new MascaraOscura(peso = 2, indiceOscuridad = 0)
+	
+	const navi = new NPC(nivel = nivelFacil)
+	const ashleyGraham = new NPC(nivel = nivelModerado, basePelea = 5, artefactos = [mascaraClara])
+	
+	test "La habilidad para la Lucha de Navi es de 1"{
+		
+		assert.equals(navi.valorDeLucha(),1)
+	}
+	
+	/* Este test no tiene sentido, Ashley es inservible */
+	test "La habilidad para la Lucha de Ashley Graham es de 18"{
+		
+		assert.equals(ashleyGraham.valorDeLucha(), 18)
+	}
+	
+	test "Ashley Graham pasa a tener Dificultad Dificil y su habilidad para la Lucha es de 36"{
+		
+		ashleyGraham.nivel(nivelDificil)
+		
+		assert.equals(ashleyGraham.valorDeLucha(), 36)
+	}
+	
+	
+	
+}

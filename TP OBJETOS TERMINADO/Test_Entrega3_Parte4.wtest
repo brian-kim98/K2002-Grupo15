@@ -1,0 +1,73 @@
+import rolando.*
+import Hechizos.*
+import Artefactos.*
+import Refuerzos.*
+
+describe "(Parte 4)"{
+	
+	const pastoriza = new Comerciante(impuesto = new ComercianteIndependiente(comision = 9))
+	const prieto = new Comerciante(impuesto = comercianteRegistrado)
+	const fermepin = new Comerciante(impuesto = comercianteConImpuestoAlaGanancia)
+	
+	const mascaraOscura = new MascaraOscura(peso = 3, indiceOscuridad = 1, minimo = 1)
+	
+	const ursula =  new Personaje(monedas = 100, capacidadDeCarga = 200)
+	
+	test "Ursula compra la Mascara Oscura a Pastoriza y queda con 89.1 monedas"{
+		
+		ursula.comprarArtefactoAunComerciante(mascaraOscura, pastoriza)
+		
+		assert.equals(ursula.monedas(),89.1)
+	}
+	
+	test "Ursula compra la Mascara Oscura a Prieto y queda con 87.9 monedas"{
+		
+		ursula.comprarArtefactoAunComerciante(mascaraOscura, prieto)
+		
+		assert.equals(ursula.monedas(),87.9)
+	}
+	
+	test "Ursula compra la Mascara Oscura a Fermepin y queda con 88.25 monedas"{
+		
+		ursula.comprarArtefactoAunComerciante(mascaraOscura, fermepin)
+		
+		assert.equals(ursula.monedas(),88.25)
+	}
+	
+	test "Pastoriza se recategoriza y Ursula le compra la Mascara Oscura, se queda con 88.2 monedas"{
+		
+		pastoriza.recategorizar()
+		
+		ursula.comprarArtefactoAunComerciante(mascaraOscura, pastoriza)
+	
+		assert.equals(ursula.monedas(), 88.2)
+	}
+	
+	test "Pastoriza se recategoriza 2 veces, y ursula le compra la Mascara Oscura, se queda con 87,9 monedas"{
+	
+	pastoriza.recategorizar()
+	pastoriza.recategorizar()
+	
+	ursula.comprarArtefactoAunComerciante(mascaraOscura, pastoriza)
+	
+	assert.equals(ursula.monedas(), 87.9)
+	}
+	
+	test "Prieto se recategoriza y Ursula le compra la Mascara Oscura, se queda con 88.25 monedas "{
+		
+		prieto. recategorizar()
+		
+		ursula.comprarArtefactoAunComerciante(mascaraOscura, prieto)
+		
+		assert.equals(ursula.monedas(), 88.25)
+	}
+	
+	test "Fermepin se recategoriza y Ursula le compra la Mascara Oscura, se queda con 88.25 monedas"{
+		
+		fermepin.recategorizar()
+		
+		ursula.comprarArtefactoAunComerciante(mascaraOscura, fermepin)
+		
+		assert.equals(ursula.monedas(), 88.25)
+	}
+}
